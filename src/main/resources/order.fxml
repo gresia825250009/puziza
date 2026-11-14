@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.OrderController" spacing="14">
+  <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
+
+  <HBox alignment="CENTER_LEFT">
+    <Label text="Pemesanan" styleClass="section-title"/>
+    <Region HBox.hgrow="ALWAYS"/>
+    <Button text="Kembali ke Halaman Utama" styleClass="secondary" onAction="#backToHome"/>
+  </HBox>
+
+  <VBox spacing="12" styleClass="content-card">
+    <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+      <ComboBox fx:id="pizzaCombo" promptText="Pilih varian dan ukuran" prefWidth="300"/>
+      <Spinner fx:id="quantitySpinner" prefWidth="90"/>
+      <Button text="Tambah ke keranjang" onAction="#addItem" styleClass="primary"/>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+      <ComboBox fx:id="customerCombo" editable="true" promptText="Nama customer (kosongkan jika walk-in)" prefWidth="330"/>
+      <ComboBox fx:id="cashierCombo" promptText="Kasir" prefWidth="200"/>
+    </HBox>
+  </VBox>
+
+  <Label text="Keranjang pesanan" styleClass="section-title"/>
+  <ListView fx:id="cartList" VBox.vgrow="ALWAYS" prefHeight="180" styleClass="content-card"/>
+  <Label fx:id="totalLabel" text="Total: Rp0" styleClass="total" wrapText="true"/>
+  <HBox spacing="10">
+    <Button text="Kosongkan" styleClass="secondary" onAction="#clearCart"/>
+    <Button text="Checkout dan simpan" onAction="#checkout" styleClass="primary"/>
+  </HBox>
+</VBox>

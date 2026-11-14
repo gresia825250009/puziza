@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.CustomerController" spacing="12">
+  <HBox spacing="8"><TextField fx:id="nameField" promptText="Nama customer"/><TextField fx:id="phoneField" promptText="Nomor telepon"/><TextField fx:id="emailField" promptText="Email"/></HBox>
+  <HBox spacing="8"><Button text="Tambah" onAction="#add"/><Button text="Hapus" onAction="#delete"/><Button text="Bersihkan" onAction="#clear"/></HBox>
+  <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+    <columns><TableColumn fx:id="idColumn" text="ID"/><TableColumn fx:id="nameColumn" text="Nama"/><TableColumn fx:id="phoneColumn" text="Telepon"/><TableColumn fx:id="emailColumn" text="Email"/></columns>
+  </TableView>
+</VBox>

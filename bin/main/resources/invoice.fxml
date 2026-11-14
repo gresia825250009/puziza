@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.InvoiceController" spacing="8" prefWidth="420" prefHeight="500">
+  <Label text="STRUK PUZIZA PIZZA" styleClass="section-title"/>
+  <TextArea fx:id="invoiceArea" editable="false" wrapText="false" VBox.vgrow="ALWAYS"/>
+</VBox>

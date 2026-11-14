@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.CashierController" spacing="12">
+  <Label text="Daftar Kasir" styleClass="section-title"/>
+  <ListView fx:id="cashierList" VBox.vgrow="ALWAYS"/>
+</VBox>

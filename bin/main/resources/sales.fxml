@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.SalesController" spacing="12">
+  <HBox alignment="CENTER_LEFT" spacing="10"><Label text="Riwayat transaksi" styleClass="section-title"/><Button text="Refresh" onAction="#refresh"/></HBox>
+  <ListView fx:id="salesList" VBox.vgrow="ALWAYS"/>
+</VBox>

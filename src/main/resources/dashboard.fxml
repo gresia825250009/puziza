@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<HBox prefHeight="650" prefWidth="1100" stylesheets="@css/style.css"
+      xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.DashboardController">
+    <VBox spacing="15" style="-fx-background-color: #2c3e50;" prefWidth="205">
+        <padding><Insets bottom="20" left="15" right="15" top="30"/></padding>
+        <Label text="PUZIZA ADMIN" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+        <Separator opacity="0.3"/>
+        <Button text="Manage Pizza" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showPizzaView"/>
+        <Button text="Manage Customer" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showCustomerView"/>
+        <Button text="Manage Cashier" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showCashierView"/>
+        <Button text="Manage Sales" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showSalesView"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Separator opacity="0.3"/>
+        <Label text="Administrator" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+        <Button text="Kembali ke Halaman Utama" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#logout"/>
+    </VBox>
+    <TabPane fx:id="mainTabPane" HBox.hgrow="ALWAYS" tabClosingPolicy="ALL_TABS"/>
+</HBox>
