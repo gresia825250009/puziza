@@ -1,10 +1,35 @@
 package main.java.model;
-/** Association antara satu transaksi dengan pizza yang dipesan. */
+/*
+ * Class: OrderItem
+ * Deskripsi: Model satu jenis pizza dan jumlah pesanannya.
+ * @author Gresia Valerina Widi
+ * @author Garneta Auril Triasis
+ */
+
+/* Association antara satu transaksi dengan pizza yang dipesan. */
+// Menyimpan satu jenis pizza dan jumlahnya di dalam transaksi.
 public class OrderItem {
+    // Pizza yang dipesan dan jumlah unitnya.
     private Pizza pizza;
     private int quantity;
-    public OrderItem(Pizza pizza,int quantity){ this.pizza=pizza; this.quantity=quantity; }
-    public Pizza getPizza(){ return pizza; }
-    public int getQuantity(){ return quantity; }
-    public double getSubtotal(){ return pizza.getFinalPrice()*quantity; }
+
+    // Membentuk satu detail keranjang dari pizza dan jumlah pesanan.
+    public OrderItem(Pizza pizza, int quantity) {
+        this.pizza = pizza;
+        this.quantity = quantity;
+    }
+
+    // Getter menyediakan data item untuk controller, tabel, dan invoice.
+    public Pizza getPizza() {
+        return pizza;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    // Subtotal dihitung dari harga setelah diskon dikali jumlah.
+    public double getSubtotal() {
+        return pizza.getFinalPrice() * quantity;
+    }
 }

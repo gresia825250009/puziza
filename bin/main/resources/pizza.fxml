@@ -1,15 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: pizza.fxml
+  Deskripsi: Tampilan untuk mengelola data menu pizza.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import kontrol dan layout JavaFX yang dipakai halaman pengelolaan pizza. -->
+<!-- Mengimpor field, tombol, dan tabel untuk pengelolaan pizza. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor VBox, GridPane, dan HBox untuk susunan form. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.PizzaController" spacing="12">
-  <HBox spacing="8"><TextField fx:id="nameField" promptText="Nama (VolcanoMeat/CheeseMania)"/><TextField fx:id="sizeField" promptText="Ukuran"/><TextField fx:id="priceField" promptText="Harga"/></HBox>
-  <HBox spacing="8"><Button text="Tambah" onAction="#add"/><Button text="Ubah" onAction="#update"/><Button text="Hapus" onAction="#delete"/><Button text="Bersihkan" onAction="#clear"/></HBox>
-  <TableView fx:id="pizzaTable" VBox.vgrow="ALWAYS">
+
+<!-- Form ini terhubung ke PizzaController; fx:id menjadi nama field Java. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.PizzaController"
+      spacing="12"
+      styleClass="admin-page">
+  <VBox spacing="12" styleClass="admin-form-card">
+    <GridPane hgap="14" vgap="10">
+      <!-- KolomConstraints mengatur lebar label dan field input. -->
+      <!-- Lebar kolom label dan field input. -->
+      <columnConstraints>
+        <ColumnConstraints minWidth="95" prefWidth="110"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+      </columnConstraints>
+
+      <!-- Input untuk nama, ukuran, dan harga dasar pizza. -->
+      <Label text="Nama:" styleClass="admin-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+      <TextField fx:id="nameField"
+                 promptText="VolcanoMeat / CheeseMania"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="0"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Field ukuran pizza. -->
+      <Label text="Ukuran:" styleClass="admin-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+      <TextField fx:id="sizeField"
+                 promptText="Small / Medium / Large"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="1"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Field untuk harga dasar pizza. -->
+      <Label text="Harga:" styleClass="admin-form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+      <TextField fx:id="priceField"
+                 promptText="Harga"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="2"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+    </GridPane>
+    <!-- Tombol Submit, Delete, dan Update memanggil method controller terkait. -->
+    <HBox alignment="CENTER_RIGHT" spacing="10" maxWidth="Infinity">
+      <Button text="Submit" onAction="#add" styleClass="admin-primary-button"/>
+      <!-- Hapus menghilangkan baris pizza yang sedang dipilih. -->
+      <Button text="Delete" onAction="#delete" styleClass="admin-danger-button"/>
+      <!-- Update memperbarui baris pizza yang sedang dipilih. -->
+      <Button text="Update" onAction="#update" styleClass="admin-primary-button"/>
+    </HBox>
+  </VBox>
+  <!-- TableView menampilkan data pizza; pilihan baris dipakai saat ubah/hapus. -->
+  <TableView fx:id="pizzaTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
+    <!-- Daftar kolom yang ditampilkan pada tabel pizza. -->
     <columns>
       <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
       <TableColumn fx:id="nameColumn" text="Nama Pizza" prefWidth="200"/>
       <TableColumn fx:id="sizeColumn" text="Ukuran" prefWidth="130"/>
       <TableColumn fx:id="priceColumn" text="Harga" prefWidth="150"/>
     </columns>
+  <!-- Menutup tabel pizza. -->
   </TableView>
+<!-- Menutup halaman pengelolaan pizza. -->
 </VBox>

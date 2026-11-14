@@ -1,10 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: customer.fxml
+  Deskripsi: Tampilan untuk mengelola data customer.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import kontrol dan layout untuk mengisi form customer. -->
+<!-- Mengimpor TextField, Button, dan kontrol tabel. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor VBox, GridPane, dan HBox untuk layout form. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.CustomerController" spacing="12">
-  <HBox spacing="8"><TextField fx:id="nameField" promptText="Nama customer"/><TextField fx:id="phoneField" promptText="Nomor telepon"/><TextField fx:id="emailField" promptText="Email"/></HBox>
-  <HBox spacing="8"><Button text="Tambah" onAction="#add"/><Button text="Hapus" onAction="#delete"/><Button text="Bersihkan" onAction="#clear"/></HBox>
-  <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
-    <columns><TableColumn fx:id="idColumn" text="ID"/><TableColumn fx:id="nameColumn" text="Nama"/><TableColumn fx:id="phoneColumn" text="Telepon"/><TableColumn fx:id="emailColumn" text="Email"/></columns>
+
+<!-- Form dan tabel dikelola oleh CustomerController. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.CustomerController"
+      spacing="12"
+      styleClass="admin-page">
+  <VBox spacing="12" styleClass="admin-form-card">
+    <GridPane hgap="14" vgap="10">
+      <!-- Mengatur ukuran kolom label dan input. -->
+      <columnConstraints>
+        <ColumnConstraints minWidth="95" prefWidth="110"/>
+        <ColumnConstraints hgrow="ALWAYS"/>
+      </columnConstraints>
+      <!-- Field input nama, nomor telepon, dan email customer. -->
+      <Label text="Nama:" styleClass="admin-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+      <TextField fx:id="nameField"
+                 promptText="Nama customer"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="0"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Field untuk nomor telepon customer. -->
+      <Label text="Telepon:" styleClass="admin-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+      <TextField fx:id="phoneField"
+                 promptText="Nomor telepon"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="1"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Field untuk alamat email customer. -->
+      <Label text="Email:" styleClass="admin-form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+      <TextField fx:id="emailField"
+                 promptText="Email"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="2"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+    </GridPane>
+    <!-- Setiap tombol memanggil aksi CRUD yang sesuai pada controller. -->
+    <HBox alignment="CENTER_RIGHT" spacing="10" maxWidth="Infinity">
+      <Button text="Submit" onAction="#add" styleClass="admin-primary-button"/>
+      <!-- Delete menghapus customer yang sedang dipilih. -->
+      <Button text="Delete" onAction="#delete" styleClass="admin-danger-button"/>
+      <!-- Update menyimpan perubahan pada customer yang sedang dipilih. -->
+      <Button text="Update" onAction="#update" styleClass="admin-primary-button"/>
+    </HBox>
+  </VBox>
+  <!-- Kolom tabel menampilkan ID dan informasi customer dari database. -->
+  <TableView fx:id="customerTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
+    <columns>
+      <TableColumn fx:id="idColumn" text="ID"/>
+      <TableColumn fx:id="nameColumn" text="Nama"/>
+      <TableColumn fx:id="phoneColumn" text="Telepon"/>
+      <TableColumn fx:id="emailColumn" text="Email"/>
+    </columns>
+  <!-- Menutup tabel customer. -->
   </TableView>
+<!-- Menutup halaman pengelolaan customer. -->
 </VBox>

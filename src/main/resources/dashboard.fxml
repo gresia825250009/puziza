@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: dashboard.fxml
+  Deskripsi: Tampilan utama dashboard admin.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import padding, kontrol navigasi, dan layout. -->
 <?import javafx.geometry.Insets?>
+<!-- Mengimpor kontrol navigasi, label, separator, dan tab. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor VBox, HBox, dan Region sebagai kontainer. -->
 <?import javafx.scene.layout.*?>
-<HBox prefHeight="650" prefWidth="1100" stylesheets="@css/style.css"
+
+<!-- HBox membagi dashboard menjadi sidebar navigasi dan TabPane konten. -->
+<HBox prefHeight="650" prefWidth="1100" styleClass="admin-shell" stylesheets="@css/style.css"
       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="main.java.controller.DashboardController">
-    <VBox spacing="15" style="-fx-background-color: #2c3e50;" prefWidth="205">
-        <padding><Insets bottom="20" left="15" right="15" top="30"/></padding>
-        <Label text="PUZIZA ADMIN" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px;"/>
-        <Separator opacity="0.3"/>
-        <Button text="Manage Pizza" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showPizzaView"/>
-        <Button text="Manage Customer" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showCustomerView"/>
-        <Button text="Manage Cashier" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showCashierView"/>
-        <Button text="Manage Sales" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#showSalesView"/>
+    <VBox spacing="16" styleClass="admin-sidebar" prefWidth="270">
+        <!-- Tombol sidebar membuka halaman admin melalui DashboardController. -->
+        <!-- Identitas aplikasi pada sidebar. -->
+        <Label text="PUZIZA ADMIN" styleClass="admin-brand-title"/>
+        <!-- Pemisah area merek dan menu navigasi. -->
+        <Separator/>
+        <!-- Tombol menu membuka tab pengelolaan pizza. -->
+        <Button text="Manage Pizza" maxWidth="Infinity" styleClass="admin-nav-button" onAction="#showPizzaView"/>
+        <!-- Tombol menu membuka tab customer. -->
+        <Button text="Manage Customer" maxWidth="Infinity" styleClass="admin-nav-button" onAction="#showCustomerView"/>
+        <!-- Tombol menu membuka tab kasir. -->
+        <Button text="Manage Cashier" maxWidth="Infinity" styleClass="admin-nav-button" onAction="#showCashierView"/>
+        <!-- Tombol menu membuka tab riwayat penjualan. -->
+        <Button text="Manage Sales" maxWidth="Infinity" styleClass="admin-nav-button" onAction="#showSalesView"/>
+        <!-- Area fleksibel mendorong informasi pengguna dan Logout ke bagian bawah. -->
         <Region VBox.vgrow="ALWAYS"/>
-        <Separator opacity="0.3"/>
-        <Label text="Administrator" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
-        <Button text="Kembali ke Halaman Utama" maxWidth="Infinity" style="-fx-alignment: BASELINE_LEFT;" onAction="#logout"/>
+        <!-- Memisahkan navigasi dari identitas pengguna dan tombol keluar. -->
+        <Separator/>
+        <Label fx:id="adminUserLabel" text="Hi, Administrator" styleClass="admin-user"/>
+        <Button text="Logout" maxWidth="Infinity" styleClass="admin-logout-button" onAction="#logout"/>
+    <!-- Menutup sidebar dashboard. -->
     </VBox>
-    <TabPane fx:id="mainTabPane" HBox.hgrow="ALWAYS" tabClosingPolicy="ALL_TABS"/>
+    <!-- Controller menambahkan halaman pizza/customer/kasir/penjualan sebagai tab. -->
+    <TabPane fx:id="mainTabPane" styleClass="admin-tab-pane" HBox.hgrow="ALWAYS" tabClosingPolicy="ALL_TABS"/>
 </HBox>

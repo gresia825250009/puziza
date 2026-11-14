@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: user_menu.fxml
+  Deskripsi: Tampilan daftar menu pizza untuk pelanggan.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import komponen untuk padding, kontrol, dan susunan halaman. -->
 <?import javafx.geometry.Insets?>
+<!-- Mengimpor Label, Button, dan ListView untuk isi menu. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor BorderPane, HBox, VBox, dan Region untuk susunan layar. -->
 <?import javafx.scene.layout.*?>
-<BorderPane stylesheets="@css/style.css" xmlns="http://javafx.com/javafx"
+
+<!-- BorderPane membagi halaman menjadi header dan konten menu. -->
+<BorderPane styleClass="user-menu-screen" stylesheets="@css/style.css" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.UserMenuController">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: #2c3e50;">
+        <!-- Header memuat nama aplikasi dan tombol kembali ke sambutan. -->
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="user-menu-header">
+            <!-- Jarak dalam header agar konten tidak menempel ke tepi. -->
             <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
-            <Label text="PUZIZA PIZZA" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label text="PUZIZA PIZZA" styleClass="user-menu-brand"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="Back" onAction="#backToWelcome" styleClass="button-secondary"/>
+        <!-- Menutup header. -->
         </HBox>
     </top>
     <center>
+        <!-- Area tengah berisi judul, keterangan diskon, daftar menu, dan aksi pesan. -->
         <VBox spacing="15">
+            <!-- Jarak dalam area konten utama. -->
             <padding><Insets top="25" right="30" bottom="25" left="30"/></padding>
-            <Label text="Our Pizza Menu" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <!-- Judul dan petunjuk pemilihan menu pizza. -->
+            <Label text="Our Pizza Menu" styleClass="user-menu-title"/>
             <Label text="Pilih pizza favoritmu. Diskon 45% berlaku untuk ukuran Medium."/>
+            <!-- ListView diisi dari database oleh UserMenuController. -->
             <ListView fx:id="menuList" VBox.vgrow="ALWAYS" prefHeight="380"/>
             <Button text="Mulai Pesan" onAction="#startOrder" styleClass="button-primary" maxWidth="Infinity"/>
+            <!-- Tombol memulai pemesanan melalui UserMenuController. -->
         </VBox>
+        <!-- Menutup area tengah BorderPane. -->
     </center>
+<!-- Menutup tampilan menu pelanggan. -->
 </BorderPane>

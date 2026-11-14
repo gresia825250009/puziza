@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: welcome.fxml
+  Deskripsi: Tampilan sambutan dan pilihan akses aplikasi.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Insets mengatur jarak, control berisi label/tombol, layout menyusun posisinya. -->
 <?import javafx.geometry.Insets?>
+<!-- Mengimpor kontrol seperti Label, Button, dan Separator. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor kontainer VBox dan StackPane. -->
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="root" stylesheets="@css/style.css"
+
+<!-- Kontainer utama layar sambutan; fx:controller menghubungkan tampilan ke controller. -->
+<StackPane fx:id="root" styleClass="welcome-screen" stylesheets="@css/style.css"
            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="main.java.controller.WelcomeController">
+    <!-- Kartu tengah yang menampung identitas aplikasi dan pilihan jenis pengguna. -->
     <VBox alignment="CENTER" spacing="18" maxWidth="440" styleClass="welcome-container">
+        <!-- Mengatur ruang di dalam kartu sambutan. -->
         <padding><Insets top="35" right="40" bottom="35" left="40"/></padding>
-        <Label text="PUZIZA PIZZA" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-        <Label text="Fresh Pizza, Happy Moments!" style="-fx-font-size: 14px; -fx-text-fill: #6c757d;"/>
+        <!-- Label identitas aplikasi, tagline, dan judul sambutan. -->
+        <Label text="PUZIZA PIZZA" styleClass="welcome-brand"/>
+        <Label text="Fresh Pizza, Happy Moments!" styleClass="welcome-tagline"/>
+        <!-- Garis pemisah antara identitas aplikasi dan pilihan pengguna. -->
         <Separator/>
-        <Label text="Welcome!" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+        <Label text="Welcome!" styleClass="welcome-heading"/>
+        <!-- Petunjuk singkat sebelum pengguna memilih jalur aplikasi. -->
         <Label text="Silakan pilih akses untuk melanjutkan."/>
+        <!-- Tombol pelanggan dan admin memanggil handler di WelcomeController. -->
         <Button text="ORDER AS CUSTOMER" onAction="#handleUser" maxWidth="Infinity" styleClass="button-primary"/>
         <Button text="ADMIN LOGIN" onAction="#handleAdmin" maxWidth="Infinity" styleClass="button-secondary"/>
+    <!-- Menutup kontainer isi sambutan. -->
     </VBox>
+<!-- Menutup akar StackPane. -->
 </StackPane>

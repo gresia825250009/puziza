@@ -1,7 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?><!-- Menetapkan versi dan encoding dokumen XML. -->
+<!--
+  File: cashier.fxml
+  Deskripsi: Tampilan untuk mengelola data kasir.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import kontrol dan layout JavaFX untuk form serta tabel kasir. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor layout untuk menyusun form dan tabel kasir. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.CashierController" spacing="12">
-  <Label text="Daftar Kasir" styleClass="section-title"/>
-  <ListView fx:id="cashierList" VBox.vgrow="ALWAYS"/>
+
+<!-- Halaman dikelola CashierController melalui field fx:id dan handler tombol. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.CashierController"
+      spacing="14"
+      styleClass="admin-page">
+  <!-- ToggleGroup memastikan hanya satu pilihan gender radio yang aktif. -->
+  <!-- Definisi objek yang dipakai sebagai grup pilihan radio gender. -->
+  <fx:define>
+    <!-- ID ini direferensikan oleh kedua RadioButton di bawah. -->
+    <ToggleGroup fx:id="genderGroup"/>
+    <!-- Menutup definisi objek FXML. -->
+  </fx:define>
+  <!-- Kartu sebagai wadah input data kasir. -->
+  <VBox spacing="12" styleClass="admin-form-card">
+    <!-- GridPane menyusun label dan kontrol input per baris. -->
+    <GridPane hgap="14" vgap="10">
+      <!-- Mengatur lebar kolom label dan kolom input. -->
+      <columnConstraints>
+        <!-- Lebar minimum dan awal untuk kolom label. -->
+        <ColumnConstraints minWidth="95" prefWidth="110"/>
+        <!-- Kolom input mengisi sisa ruang yang tersedia. -->
+        <ColumnConstraints hgrow="ALWAYS"/>
+        <!-- Menutup konfigurasi lebar kolom. -->
+      </columnConstraints>
+      <!-- Label untuk field nama kasir. -->
+      <Label text="Nama:" styleClass="admin-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+      <!-- fx:id menghubungkan input nama dengan field controller. -->
+      <TextField fx:id="nameField"
+                 promptText="Nama kasir"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="0"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Label untuk pilihan role. -->
+      <Label text="Role:" styleClass="admin-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+      <!-- ComboBox role yang pilihan awalnya diatur oleh controller. -->
+      <ComboBox fx:id="roleComboBox"
+                styleClass="admin-field"
+                maxWidth="Infinity"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="1"
+                GridPane.hgrow="ALWAYS"/>
+      <!-- Label untuk pilihan gender. -->
+      <Label text="Gender:" styleClass="admin-form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+      <!-- RadioButton mengisi pilihan gender; keduanya memakai ToggleGroup yang sama. -->
+      <HBox spacing="12" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+        <!-- Pilihan Male; ToggleGroup membatasi satu radio aktif. -->
+        <RadioButton fx:id="maleRadio" text="Male" selected="true" toggleGroup="$genderGroup"/>
+        <!-- Pilihan Female pada ToggleGroup yang sama. -->
+        <RadioButton fx:id="femaleRadio" text="Female" toggleGroup="$genderGroup"/>
+        <!-- Menutup baris pilihan gender. -->
+      </HBox>
+      <!-- Label untuk tanggal lahir. -->
+      <Label text="Birthdate:" styleClass="admin-form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+      <!-- DatePicker menghubungkan tanggal pilihan ke controller. -->
+      <DatePicker fx:id="birthDatePicker"
+                  promptText="Pilih tanggal lahir"
+                  styleClass="admin-field"
+                  maxWidth="Infinity"
+                  GridPane.rowIndex="3"
+                  GridPane.columnIndex="1"
+                  GridPane.hgrow="ALWAYS"/>
+      <!-- Label untuk username login. -->
+      <Label text="Username:" styleClass="admin-form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+      <!-- Input username yang dipakai untuk proses autentikasi. -->
+      <TextField fx:id="usernameField"
+                 promptText="Username untuk login"
+                 styleClass="admin-field"
+                 maxWidth="Infinity"
+                 GridPane.rowIndex="4"
+                 GridPane.columnIndex="1"
+                 GridPane.hgrow="ALWAYS"/>
+      <!-- Label untuk password akun. -->
+      <Label text="Password:" styleClass="admin-form-label" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+      <!-- PasswordField menyamarkan karakter password yang diketik. -->
+      <PasswordField fx:id="passwordField"
+                     promptText="admin123"
+                     styleClass="admin-field"
+                     maxWidth="Infinity"
+                     GridPane.rowIndex="5"
+                     GridPane.columnIndex="1"
+                     GridPane.hgrow="ALWAYS"/>
+      <!-- Menutup susunan field form. -->
+    </GridPane>
+    <!-- Aksi tambah, hapus, dan ubah meneruskan event ke controller. -->
+    <HBox alignment="CENTER_RIGHT" spacing="10" maxWidth="Infinity">
+      <!-- Submit memanggil aksi tambah kasir pada controller. -->
+      <Button text="Submit" onAction="#add" styleClass="admin-primary-button"/>
+      <!-- Delete menghapus kasir yang dipilih setelah proses konfirmasi. -->
+      <Button text="Delete" onAction="#delete" styleClass="admin-danger-button"/>
+      <!-- Update menyimpan perubahan pada kasir yang dipilih. -->
+      <Button text="Update" onAction="#update" styleClass="admin-primary-button"/>
+      <!-- Menutup deretan tombol aksi. -->
+    </HBox>
+    <!-- Menutup kartu form kasir. -->
+  </VBox>
+  <!-- Judul bagian daftar kasir. -->
+  <Label text="Daftar Kasir" styleClass="admin-page-title"/>
+  <!-- Tabel daftar kasir; pemilihan baris akan mengisi kembali form. -->
+  <TableView fx:id="cashierTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
+    <!-- Daftar kolom yang ditampilkan pada tabel. -->
+    <columns>
+      <!-- Nama lengkap kasir. -->
+      <TableColumn fx:id="nameColumn" text="Name" prefWidth="170"/>
+      <!-- Role kasir. -->
+      <TableColumn fx:id="roleColumn" text="Role" prefWidth="90"/>
+      <!-- Gender kasir. -->
+      <TableColumn fx:id="genderColumn" text="Gender" prefWidth="100"/>
+      <!-- Tanggal lahir kasir. -->
+      <TableColumn fx:id="birthDateColumn" text="Birthday" prefWidth="130"/>
+      <!-- Username akun kasir. -->
+      <TableColumn fx:id="usernameColumn" text="Username" prefWidth="160"/>
+      <!-- Menutup deklarasi kolom. -->
+    </columns>
+    <!-- Menutup TableView kasir. -->
+  </TableView>
+  <!-- Menutup kontainer utama halaman. -->
 </VBox>

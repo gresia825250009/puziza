@@ -1,7 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?><!-- Menetapkan versi dan encoding dokumen XML. -->
+<!--
+  File: sales.fxml
+  Deskripsi: Tampilan tabel riwayat penjualan.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import kontrol tabel dan layout halaman. -->
+<!-- Mengimpor kontrol JavaFX seperti Label, Button, TableView, dan TableColumn. -->
+<!-- Mengimpor TableView, TableColumn, Button, Label, dan Region. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor layout seperti VBox, HBox, dan Region. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.SalesController" spacing="12">
-  <HBox alignment="CENTER_LEFT" spacing="10"><Label text="Riwayat transaksi" styleClass="section-title"/><Button text="Refresh" onAction="#refresh"/></HBox>
-  <ListView fx:id="salesList" VBox.vgrow="ALWAYS"/>
+
+<!-- Halaman riwayat penjualan dikendalikan SalesController. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.SalesController"
+      spacing="14"
+      styleClass="admin-page">
+  <!-- Header judul dengan tombol untuk mengambil ulang data riwayat. -->
+  <!-- Baris header menyusun judul dan tombol refresh secara horizontal. -->
+  <HBox alignment="CENTER_LEFT" spacing="10">
+    <!-- Judul halaman riwayat penjualan. -->
+    <Label text="Riwayat transaksi" styleClass="admin-page-title"/>
+    <!-- Region mengisi ruang kosong agar tombol berada di sisi kanan. -->
+    <Region HBox.hgrow="ALWAYS"/>
+    <!-- Tombol memanggil method refresh pada SalesController. -->
+    <Button text="Refresh" onAction="#refresh" styleClass="admin-secondary-button"/>
+    <!-- Menutup baris header. -->
+  </HBox>
+  <!-- TableView menampilkan kode, tanggal, customer, kasir, dan total transaksi. -->
+  <!-- Tabel riwayat; fx:id menghubungkannya ke field salesTable di controller. -->
+  <TableView fx:id="salesTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
+    <!-- Wadah deklarasi seluruh kolom tabel. -->
+    <columns>
+      <!-- Kolom kode unik transaksi. -->
+      <TableColumn fx:id="codeColumn" text="Kode Transaksi" prefWidth="170"/>
+      <!-- Kolom tanggal dan waktu transaksi. -->
+      <TableColumn fx:id="dateColumn" text="Tanggal" prefWidth="180"/>
+      <!-- Kolom nama customer atau label walk-in. -->
+      <TableColumn fx:id="customerColumn" text="Customer" prefWidth="180"/>
+      <!-- Kolom nama kasir yang melayani. -->
+      <TableColumn fx:id="cashierColumn" text="Kasir" prefWidth="150"/>
+      <!-- Kolom nilai total transaksi. -->
+      <TableColumn fx:id="totalColumn" text="Total" prefWidth="150"/>
+      <!-- Menutup daftar kolom tabel. -->
+    </columns>
+    <!-- Menutup TableView riwayat penjualan. -->
+  </TableView>
+  <!-- Menutup layout utama halaman. -->
 </VBox>

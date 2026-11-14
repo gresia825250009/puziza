@@ -1,32 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: order.fxml
+  Deskripsi: Tampilan pemilihan menu dan checkout pesanan.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import padding, kontrol JavaFX, dan layout yang digunakan di halaman order. -->
 <?import javafx.geometry.Insets?>
+<!-- Mengimpor ComboBox, Spinner, TableView, Button, Label, dan kolom tabel. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor VBox, HBox, GridPane, dan Region untuk susunan layar. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.OrderController" spacing="14">
+
+<!-- Form order terhubung ke OrderController untuk menu, customer, kasir, dan keranjang. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.OrderController"
+      spacing="14"
+      styleClass="order-screen">
+  <!-- Jarak dalam seluruh halaman pemesanan. -->
   <padding><Insets top="20" right="25" bottom="20" left="25"/></padding>
 
+  <!-- Header menyediakan judul dan aksi kembali ke halaman utama. -->
   <HBox alignment="CENTER_LEFT">
     <Label text="Pemesanan" styleClass="section-title"/>
+    <!-- Mendorong tombol kembali ke sisi kanan header. -->
     <Region HBox.hgrow="ALWAYS"/>
     <Button text="Kembali ke Halaman Utama" styleClass="secondary" onAction="#backToHome"/>
   </HBox>
 
-  <VBox spacing="12" styleClass="content-card">
+  <!-- ComboBox memilih pizza, customer, dan kasir; Spinner memilih jumlah. -->
+  <GridPane hgap="12" vgap="14" styleClass="content-card">
+    <!-- Jarak dalam kartu pilihan order. -->
     <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-      <ComboBox fx:id="pizzaCombo" promptText="Pilih varian dan ukuran" prefWidth="300"/>
-      <Spinner fx:id="quantitySpinner" prefWidth="90"/>
-      <Button text="Tambah ke keranjang" onAction="#addItem" styleClass="primary"/>
-    </HBox>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-      <ComboBox fx:id="customerCombo" editable="true" promptText="Nama customer (kosongkan jika walk-in)" prefWidth="330"/>
-      <ComboBox fx:id="cashierCombo" promptText="Kasir" prefWidth="200"/>
-    </HBox>
-  </VBox>
+    <columnConstraints>
+      <ColumnConstraints minWidth="110"/>
+      <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
 
+    <!-- Label dan ComboBox untuk memilih pizza dan ukuran. -->
+    <Label text="Varian &amp; Ukuran:" styleClass="grid-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="pizzaCombo"
+              promptText="Pilih varian dan ukuran"
+              maxWidth="Infinity"
+              GridPane.rowIndex="0"
+              GridPane.columnIndex="1"/>
+
+    <!-- Spinner mengatur jumlah pizza yang akan ditambahkan. -->
+    <Label text="Jumlah:" styleClass="grid-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <Spinner fx:id="quantitySpinner" prefWidth="110" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <!-- ComboBox editable memilih customer atau menerima nama baru. -->
+    <Label text="Customer:" styleClass="grid-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="customerCombo"
+              editable="true"
+              promptText="Nama customer"
+              maxWidth="Infinity"
+              GridPane.rowIndex="2"
+              GridPane.columnIndex="1"/>
+
+    <!-- ComboBox untuk memilih kasir yang melayani transaksi. -->
+    <Label text="Kasir:" styleClass="grid-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <ComboBox fx:id="cashierCombo"
+              promptText="Kasir"
+              maxWidth="Infinity"
+              GridPane.rowIndex="3"
+              GridPane.columnIndex="1"/>
+
+    <!-- Tombol ini memasukkan pilihan pizza/jumlah ke keranjang. -->
+    <Button text="Submit" onAction="#addItem" styleClass="primary" maxWidth="Infinity"
+            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+  </GridPane>
+
+  <!-- Judul dan tabel daftar item yang sudah dimasukkan ke keranjang. -->
   <Label text="Keranjang pesanan" styleClass="section-title"/>
-  <ListView fx:id="cartList" VBox.vgrow="ALWAYS" prefHeight="180" styleClass="content-card"/>
+  <!-- Tabel keranjang menampilkan item pesanan dan dihitung ulang oleh controller. -->
+  <TableView fx:id="cartTable" VBox.vgrow="ALWAYS" prefHeight="180">
+    <columns>
+      <!-- Kolom nama customer terkait item order. -->
+      <TableColumn fx:id="customerColumn" text="Nama Customer" prefWidth="150"/>
+      <!-- Kolom nama, ukuran, jumlah, dan subtotal pizza. -->
+      <TableColumn fx:id="nameColumn" text="Nama Pizza" prefWidth="180"/>
+      <TableColumn fx:id="sizeColumn" text="Ukuran" prefWidth="90"/>
+      <TableColumn fx:id="qtyColumn" text="Qty" prefWidth="60"/>
+      <TableColumn fx:id="subtotalColumn" text="Subtotal" prefWidth="120"/>
+    </columns>
+  </TableView>
+  <!-- Label total diperbarui saat isi keranjang berubah. -->
   <Label fx:id="totalLabel" text="Total: Rp0" styleClass="total" wrapText="true"/>
+  <!-- Tombol mengosongkan keranjang atau menyimpan transaksi dan membuka invoice. -->
+  <!-- Aksi membersihkan keranjang atau menyimpan transaksi. -->
   <HBox spacing="10">
     <Button text="Kosongkan" styleClass="secondary" onAction="#clearCart"/>
     <Button text="Checkout dan simpan" onAction="#checkout" styleClass="primary"/>

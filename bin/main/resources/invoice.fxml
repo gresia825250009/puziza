@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: invoice.fxml
+  Deskripsi: Tampilan struk atau invoice transaksi.
+  @author Gresia Valerina Widi
+  @author Garneta Auril Triasis
+-->
+
+<!-- Import kontrol teks dan layout vertikal JavaFX. -->
+<!-- Mengimpor Label dan TextArea untuk tampilan invoice. -->
 <?import javafx.scene.control.*?>
+<!-- Mengimpor VBox sebagai kontainer invoice. -->
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.java.controller.InvoiceController" spacing="8" prefWidth="420" prefHeight="500">
+
+<!-- InvoiceController mengisi TextArea dengan ringkasan transaksi. -->
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="main.java.controller.InvoiceController"
+      spacing="8"
+      prefWidth="420"
+      prefHeight="500"
+      styleClass="invoice-screen">
+  <!-- Judul struk transaksi. -->
   <Label text="STRUK PUZIZA PIZZA" styleClass="section-title"/>
+  <!-- Area hanya-baca agar invoice ditampilkan tanpa dapat diedit pengguna. -->
   <TextArea fx:id="invoiceArea" editable="false" wrapText="false" VBox.vgrow="ALWAYS"/>
 </VBox>
