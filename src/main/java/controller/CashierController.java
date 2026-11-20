@@ -67,12 +67,14 @@ public class CashierController {
         roleComboBox.setItems(FXCollections.observableArrayList("Kasir"));
         roleComboBox.setValue("Kasir");
         nameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
-        roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPersonType()));
-        genderColumn.setCellValueFactory(cell ->
-                new SimpleStringProperty(displayGenderValue(cell.getValue().getGender())));
-        birthDateColumn.setCellValueFactory(cell -> new SimpleStringProperty(
-                cell.getValue().getBirthDate() == null ? "" : cell.getValue().getBirthDate().toString()));
+        roleColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getrole()));
+        genderColumn.setCellValueFactory(cell -> new SimpleStringProperty(displayGenderValue(cell.getValue().getGender())));
+        birthDateColumn.setCellValueFactory(cell -> {
+            Cashier cashier = cell.getValue();
+            return new SimpleStringProperty(cashier.getBirthDate() != null ? cashier.getBirthDate().toString() : "-");
+        });
         usernameColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getUsername()));
+
         // Saat baris dipilih, salin datanya ke form agar bisa dibaca atau diedit.
         cashierTable.getSelectionModel().selectedItemProperty().addListener((observable, oldCashier, cashier) -> {
             if (cashier != null) {
@@ -115,6 +117,7 @@ public class CashierController {
             String password = passwordField.getText();
             String gender = selectedGender();
             LocalDate birthDate = birthDatePicker.getValue();
+
             dao.updateCashier(selected.getId(), name, username, password, gender, birthDate);
             if (Session.currentCashier != null && Session.currentCashier.getId() == selected.getId()) {
                 Session.currentCashier.setName(name);

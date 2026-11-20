@@ -1,75 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  File: customer.fxml
-  Deskripsi: Tampilan untuk mengelola data customer.
-  @author Gresia Valerina Widi
-  @author Garneta Auril Triasis
--->
-
-<!-- Import kontrol dan layout untuk mengisi form customer. -->
-<!-- Mengimpor TextField, Button, dan kontrol tabel. -->
 <?import javafx.scene.control.*?>
-<!-- Mengimpor VBox, GridPane, dan HBox untuk layout form. -->
 <?import javafx.scene.layout.*?>
 
-<!-- Form dan tabel dikelola oleh CustomerController. -->
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="main.java.controller.CustomerController"
-      spacing="12"
+      spacing="14"
       styleClass="admin-page">
-  <VBox spacing="12" styleClass="admin-form-card">
-    <GridPane hgap="14" vgap="10">
-      <!-- Mengatur ukuran kolom label dan input. -->
-      <columnConstraints>
-        <ColumnConstraints minWidth="95" prefWidth="110"/>
-        <ColumnConstraints hgrow="ALWAYS"/>
-      </columnConstraints>
-      <!-- Field input nama, nomor telepon, dan email customer. -->
-      <Label text="Nama:" styleClass="admin-form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-      <TextField fx:id="nameField"
-                 promptText="Nama customer"
-                 styleClass="admin-field"
-                 maxWidth="Infinity"
-                 GridPane.rowIndex="0"
-                 GridPane.columnIndex="1"
-                 GridPane.hgrow="ALWAYS"/>
-      <!-- Field untuk nomor telepon customer. -->
-      <Label text="Telepon:" styleClass="admin-form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-      <TextField fx:id="phoneField"
-                 promptText="Nomor telepon"
-                 styleClass="admin-field"
-                 maxWidth="Infinity"
-                 GridPane.rowIndex="1"
-                 GridPane.columnIndex="1"
-                 GridPane.hgrow="ALWAYS"/>
-      <!-- Field untuk alamat email customer. -->
-      <Label text="Email:" styleClass="admin-form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-      <TextField fx:id="emailField"
-                 promptText="Email"
-                 styleClass="admin-field"
-                 maxWidth="Infinity"
-                 GridPane.rowIndex="2"
-                 GridPane.columnIndex="1"
-                 GridPane.hgrow="ALWAYS"/>
-    </GridPane>
-    <!-- Setiap tombol memanggil aksi CRUD yang sesuai pada controller. -->
-    <HBox alignment="CENTER_RIGHT" spacing="10" maxWidth="Infinity">
-      <Button text="Submit" onAction="#add" styleClass="admin-primary-button"/>
-      <!-- Delete menghapus customer yang sedang dipilih. -->
-      <Button text="Delete" onAction="#delete" styleClass="admin-danger-button"/>
-      <!-- Update menyimpan perubahan pada customer yang sedang dipilih. -->
-      <Button text="Update" onAction="#update" styleClass="admin-primary-button"/>
-    </HBox>
-  </VBox>
-  <!-- Kolom tabel menampilkan ID dan informasi customer dari database. -->
-  <TableView fx:id="customerTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
-    <columns>
-      <TableColumn fx:id="idColumn" text="ID"/>
-      <TableColumn fx:id="nameColumn" text="Nama"/>
-      <TableColumn fx:id="phoneColumn" text="Telepon"/>
-      <TableColumn fx:id="emailColumn" text="Email"/>
-    </columns>
-  <!-- Menutup tabel customer. -->
-  </TableView>
-<!-- Menutup halaman pengelolaan customer. -->
+    <fx:define>
+        <ToggleGroup fx:id="genderGroup"/>
+    </fx:define>
+
+    <VBox spacing="12" styleClass="admin-form-card">
+        <GridPane hgap="14" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints minWidth="95" prefWidth="110"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="Name:" styleClass="admin-form-label"
+                   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="nameField" promptText="Nama customer"
+                       styleClass="admin-field" maxWidth="Infinity"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1"
+                       GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Role:" styleClass="admin-form-label"
+                   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <ComboBox fx:id="roleComboBox" styleClass="admin-field"
+                      maxWidth="Infinity" GridPane.rowIndex="1"
+                      GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"/>
+
+            <Label text="Gender:" styleClass="admin-form-label"
+                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  GridPane.rowIndex="2" GridPane.columnIndex="1">
+                <RadioButton fx:id="maleRadio" text="Male" selected="true"
+                             toggleGroup="$genderGroup"/>
+                <RadioButton fx:id="femaleRadio" text="Female"
+                             toggleGroup="$genderGroup"/>
+            </HBox>
+
+            <Label text="Birthdate:" styleClass="admin-form-label"
+                   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="birthDatePicker" promptText="Pilih tanggal lahir"
+                        styleClass="admin-field" maxWidth="Infinity"
+                        GridPane.rowIndex="3" GridPane.columnIndex="1"
+                        GridPane.hgrow="ALWAYS"/>
+
+            <Label text="" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="subscribedCheckBox" text="Subscribe as Members"
+                      GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="No HP:" styleClass="admin-form-label"
+                   GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <TextField fx:id="phoneField" promptText="Nomor handphone"
+                       styleClass="admin-field" maxWidth="Infinity"
+                       GridPane.rowIndex="5" GridPane.columnIndex="1"
+                       GridPane.hgrow="ALWAYS"/>
+        </GridPane>
+
+        <HBox alignment="CENTER_LEFT" spacing="10" maxWidth="Infinity">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Submit" onAction="#add" styleClass="admin-primary-button"/>
+            <Button text="Update" onAction="#update" styleClass="admin-primary-button"/>
+            <Button text="Delete" onAction="#delete" styleClass="admin-danger-button"/>
+        </HBox>
+    </VBox>
+
+    <TableView fx:id="customerTable" styleClass="admin-table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="170"/>
+            <TableColumn fx:id="roleColumn" text="Role" prefWidth="85"/>
+            <TableColumn fx:id="genderColumn" text="Gender" prefWidth="90"/>
+            <TableColumn fx:id="birthDateColumn" text="Birthday" prefWidth="115"/>
+            <TableColumn fx:id="subscribedColumn" text="Subscribed" prefWidth="100"/>
+            <TableColumn fx:id="otherColumn" text="Lainnya" prefWidth="220"/>
+        </columns>
+    </TableView>
 </VBox>

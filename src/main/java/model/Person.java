@@ -61,11 +61,11 @@ public abstract class Person {
 
     // Setiap turunan harus menentukan validasi dan label jenisnya sendiri.
     public abstract boolean validate();
-    public abstract String getPersonType();
+    public abstract String getrole();
 
     // Representasi ringkas person ketika objek dikonversi menjadi teks.
     @Override
     public String toString() {
-        return name + " (" + getPersonType() + ")";
+        return name + " (" + getrole() + ")";
     }
 }

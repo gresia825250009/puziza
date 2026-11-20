@@ -11,12 +11,12 @@ package main.java.model;
 public class OrderItem {
     // Pizza yang dipesan dan jumlah unitnya.
     private Pizza pizza;
-    private int quantity;
+    private int listproduk;
 
     // Membentuk satu detail keranjang dari pizza dan jumlah pesanan.
-    public OrderItem(Pizza pizza, int quantity) {
+    public OrderItem(Pizza pizza, int listproduk) {
         this.pizza = pizza;
-        this.quantity = quantity;
+        this.listproduk = listproduk;
     }
 
     // Getter menyediakan data item untuk controller, tabel, dan invoice.
@@ -25,11 +25,11 @@ public class OrderItem {
     }
 
     public int getQuantity() {
-        return quantity;
+        return listproduk;
     }
 
     // Subtotal dihitung dari harga setelah diskon dikali jumlah.
     public double getSubtotal() {
-        return pizza.getFinalPrice() * quantity;
+        return pizza.getFinalPrice() * listproduk;
     }
 }

@@ -1,95 +1,95 @@
 package main.java.database;
-/*
- * Class: PenjualanDAO
- * Deskripsi: Menyimpan transaksi dan mengambil riwayat penjualan.
- * @author Gresia Valerina Widi
- * @author Garneta Auril Triasis
- */
 
-// Model detail pizza, transaksi, dan ringkasan hasil riwayat.
 import main.java.model.OrderItem;
 import main.java.model.Penjualan;
 import main.java.model.SaleHistory;
 
-// JDBC: koneksi, statement, timestamp, tipe SQL, hasil query, dan exception.
 import java.sql.*;
-// List menyimpan hasil transaksi yang dibaca.
+import java.util.ArrayList;
 import java.util.List;
-// Menyimpan transaksi beserta itemnya dan membaca riwayat penjualan.
-public class PenjualanDAO {
-    // Menyimpan header dan detail transaksi dalam satu transaksi database.
-    public int save(Penjualan sale) throws SQLException {
-        // SQL INSERT membuat header transaksi; tanda ? diisi PreparedStatement.
-        String q = "INSERT INTO sales(sale_code,created_at,customer_id,cashier_id,subtotal,tax,total) "
-                + "VALUES(?,?,?,?,?,?,?)";
-        try (Connection c = PostgreSQLConnection.getConnection()) {
-            // Header dan rincian disimpan dalam satu transaksi agar konsisten.
-            c.setAutoCommit(false);
-            try (PreparedStatement p = c.prepareStatement(q, Statement.RETURN_GENERATED_KEYS)) {
-                p.setString(1, sale.getSaleCode());
-                p.setTimestamp(2, Timestamp.valueOf(sale.getCreatedAt()));
-                if (sale.getCustomer() == null) {
-                    p.setNull(3, Types.INTEGER);
-                } else {
-                    p.setInt(3, sale.getCustomer().getId());
-                }
-                if (sale.getCashier() == null) {
-                    p.setNull(4, Types.INTEGER);
-                } else {
-                    p.setInt(4, sale.getCashier().getId());
-                }
-                p.setDouble(5, sale.getSubtotal());
-                p.setDouble(6, sale.getTax());
-                p.setDouble(7, sale.getTotal());
-                p.executeUpdate();
 
-                try (ResultSet k = p.getGeneratedKeys()) {
-                    k.next();
-                    int id = k.getInt(1);
-                    // INSERT ini menyimpan detail item dan mengaitkannya dengan ID header.
-                    try (PreparedStatement d = c.prepareStatement(
-                            "INSERT INTO sale_items(sale_id,pizza_id,quantity,unit_price) VALUES(?,?,?,?)")) {
-                        for (OrderItem item : sale.getItems()) {
-                            d.setInt(1, id);
-                            d.setInt(2, item.getPizza().getId());
-                            d.setInt(3, item.getQuantity());
-                            d.setDouble(4, item.getPizza().getFinalPrice());
-                            d.addBatch();
-                        }
-                        d.executeBatch();
+/** Menyimpan transaksi sesuai struktur tabel sales dan membaca riwayatnya. */
+public class PenjualanDAO {
+
+    /**
+     * Simpan satu transaksi. Kolom sales pada skema adalah:
+     * id, sale_code, created_at, customer_id, cashier_id, quantity, listproduk.
+     * listproduk menyimpan ID pizza; quantity menyimpan total unit yang dipesan.
+     */
+    public int save(Penjualan penjualan) throws SQLException {
+        if (penjualan == null || penjualan.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Transaksi harus memiliki minimal satu produk.");
+        }
+
+        String sql = "INSERT INTO sales(sale_code, created_at, customer_id, cashier_id, quantity, listproduk) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection c = PostgreSQLConnection.getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                int quantity = penjualan.getItems().stream()
+                        .mapToInt(OrderItem::getQuantity).sum();
+                List<Integer> ids = new ArrayList<>();
+                for (OrderItem item : penjualan.getItems()) {
+                    if (item.getPizza() == null || item.getPizza().getId() <= 0) {
+                        throw new SQLException("Ada produk tanpa ID pizza yang valid.");
                     }
-                    c.commit();
-                    return id;
+                    // Simpan ID berulang sesuai jumlah unit agar isi array tetap merepresentasikan item.
+                    for (int i = 0; i < item.getQuantity(); i++) {
+                        ids.add(item.getPizza().getId());
+                    }
                 }
-            } catch (SQLException e) {
+                Integer[] productIds = ids.toArray(new Integer[0]);
+                Array productArray = c.createArrayOf("integer", productIds);
+
+                try (PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setString(1, penjualan.getSaleCode());
+                    ps.setTimestamp(2, Timestamp.valueOf(penjualan.getCreatedAt()));
+                    if (penjualan.getCustomer() == null) ps.setNull(3, Types.INTEGER);
+                    else ps.setInt(3, penjualan.getCustomer().getId());
+                    if (penjualan.getCashier() == null) ps.setNull(4, Types.INTEGER);
+                    else ps.setInt(4, penjualan.getCashier().getId());
+                    ps.setInt(5, quantity);
+                    ps.setArray(6, productArray);
+                    ps.executeUpdate();
+
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        if (!keys.next()) throw new SQLException("Gagal mendapatkan ID transaksi.");
+                        int generatedId = keys.getInt(1);
+                        c.commit();
+                        return generatedId;
+                    }
+                } finally {
+                    productArray.free();
+                }
+            } catch (SQLException | RuntimeException e) {
                 c.rollback();
                 throw e;
             }
         }
     }
 
-    // Mengambil riwayat dengan nama customer/kasir untuk ditampilkan di tabel.
+    /** Riwayat hanya menampilkan data yang memang tersedia pada tabel sales. */
     public List<SaleHistory> getHistory() throws SQLException {
-        // List hasil query yang nanti dipasang pada tabel riwayat penjualan.
-        List<SaleHistory> rows = new java.util.ArrayList<>();
-        // SELECT menggabungkan sales dengan nama customer/kasir; LEFT JOIN menjaga
-        // transaksi walk-in tetap tampil, sedangkan COALESCE memberi teks pengganti.
-        String sql = "SELECT s.sale_code, s.created_at, s.total, "
-                + "COALESCE(pc.full_name, 'Walk-in'), COALESCE(pk.full_name, '-') "
+        List<SaleHistory> rows = new ArrayList<>();
+        String sql = "SELECT s.sale_code, s.created_at, s.quantity, "
+                + "COALESCE(pc.full_name, 'Walk-in') AS customer_name, "
+                + "COALESCE(pk.full_name, '-') AS cashier_name "
                 + "FROM sales s "
                 + "LEFT JOIN persons pc ON pc.id = s.customer_id "
                 + "LEFT JOIN persons pk ON pk.id = s.cashier_id "
                 + "ORDER BY s.id DESC";
         try (Connection c = PostgreSQLConnection.getConnection();
-             PreparedStatement p = c.prepareStatement(sql);
-             ResultSet r = p.executeQuery()) {
-            while (r.next()) {
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Timestamp timestamp = rs.getTimestamp("created_at");
                 rows.add(new SaleHistory(
-                        r.getString(1),
-                        r.getTimestamp(2).toLocalDateTime(),
-                        r.getDouble(3),
-                        r.getString(4),
-                        r.getString(5)));
+                        rs.getString("sale_code"),
+                        timestamp == null ? null : timestamp.toLocalDateTime(),
+                        rs.getInt("quantity"),
+                        rs.getString("customer_name"),
+                        rs.getString("cashier_name")));
             }
         }
         return rows;

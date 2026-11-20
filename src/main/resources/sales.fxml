@@ -42,8 +42,8 @@
       <TableColumn fx:id="customerColumn" text="Customer" prefWidth="180"/>
       <!-- Kolom nama kasir yang melayani. -->
       <TableColumn fx:id="cashierColumn" text="Kasir" prefWidth="150"/>
-      <!-- Kolom nilai total transaksi. -->
-      <TableColumn fx:id="totalColumn" text="Total" prefWidth="150"/>
+      <!-- Kolom jumlah unit produk yang terjual. -->
+      <TableColumn fx:id="quantityColumn" text="Jumlah Produk" prefWidth="150"/>
       <!-- Menutup daftar kolom tabel. -->
     </columns>
     <!-- Menutup TableView riwayat penjualan. -->

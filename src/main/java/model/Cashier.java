@@ -20,13 +20,7 @@ public class Cashier extends Person {
     private LocalDate birthDate;
 
     // Constructor sederhana untuk data yang belum memiliki gender/tanggal lahir.
-    public Cashier(int id, String name, String phone, LocalDate registeredAt, String username, String password) {
-        this(id, name, phone, registeredAt, username, password, null, null);
-    }
-
-    // Constructor lengkap: mengisi data Person dan seluruh atribut kasir.
-    public Cashier(int id, String name, String phone, LocalDate registeredAt, String username,
-                   String password, String gender, LocalDate birthDate) {
+    public Cashier(int id, String name, String phone, LocalDate registeredAt, String username, String password, String gender, LocalDate birthDate) {
         super(id, name, phone, registeredAt);
         this.username = username;
         this.password = password;
@@ -80,7 +74,8 @@ public class Cashier extends Person {
 
     // Mengembalikan label jenis person untuk ditampilkan atau dibedakan.
     @Override
-    public String getPersonType() {
+    public String getrole() {
         return "Cashier";
     }
+
 }

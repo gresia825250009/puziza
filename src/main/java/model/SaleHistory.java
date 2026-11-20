@@ -14,16 +14,16 @@ public class SaleHistory {
     // Nilai ringkasan hasil query: kode, waktu, nilai total, nama customer, dan kasir.
     private final String saleCode;
     private final LocalDateTime createdAt;
-    private final double total;
+    private final int quantity;
     private final String customerName;
     private final String cashierName;
 
     // Constructor mengisi seluruh nilai ringkasan yang ditampilkan tabel.
-    public SaleHistory(String saleCode, LocalDateTime createdAt, double total,
+    public SaleHistory(String saleCode, LocalDateTime createdAt, int quantity,
                        String customerName, String cashierName) {
         this.saleCode = saleCode;
         this.createdAt = createdAt;
-        this.total = total;
+        this.quantity = quantity;
         this.customerName = customerName;
         this.cashierName = cashierName;
     }
@@ -37,8 +37,8 @@ public class SaleHistory {
         return createdAt;
     }
 
-    public double getTotal() {
-        return total;
+    public int getQuantity() {
+        return quantity;
     }
 
     public String getCustomerName() {

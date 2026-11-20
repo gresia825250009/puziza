@@ -6,6 +6,8 @@ package main.java.view;
  * @author Garneta Auril Triasis
  */
 
+import java.sql.SQLException;
+
 // Application adalah kelas dasar untuk program JavaFX.
 import javafx.application.Application;
 // FXMLLoader membaca tampilan sambutan dari file FXML.
@@ -13,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 // Scene dan Stage membentuk isi dan jendela utama.
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.java.database.PersonDAO;
 // DAO memuat menu awal ke database bila diperlukan.
 import main.java.database.PizzaDAO;
 
@@ -36,6 +39,12 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         // launch menyerahkan pengelolaan aplikasi kepada JavaFX.
+        try {
+            PersonDAO.seedCashiers();
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+
         launch(args);
     }
 }

@@ -61,9 +61,9 @@ public class Penjualan implements Invoice {
     }
 
     // Hanya jumlah positif yang boleh menjadi item transaksi.
-    public void addPizza(Pizza pizza, int quantity) {
-        if (quantity > 0) {
-            items.add(new OrderItem(pizza, quantity));
+    public void addPizza(Pizza pizza, int listproduk) {
+        if (listproduk > 0) {
+            items.add(new OrderItem(pizza, listproduk));
         }
     }
 
@@ -109,4 +109,6 @@ public class Penjualan implements Invoice {
         b.append("\nTOTAL: ").append(rp.format(getTotal())).append("\nTerima kasih!");
         return b.toString();
     }
+
+
 }

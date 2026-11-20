@@ -1,139 +1,128 @@
 package main.java.controller;
-/*
- * Class: CustomerController
- * Deskripsi: Mengelola tampilan dan aksi data customer.
- * @author Gresia Valerina Widi
- * @author Garneta Auril Triasis
- */
 
-// DAO menangani query database untuk customer dan person.
-import main.java.database.PersonDAO;
-// Model customer yang digunakan sebagai data baris tabel.
-import main.java.model.Customer;
-
-// Utilitas untuk membuat daftar yang dapat dipantau kontrol JavaFX.
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-// FXML menghubungkan kontrol dan aksi pada tampilan.
 import javafx.fxml.FXML;
-// Kontrol-kontrol form, tabel, kolom, dan pesan.
 import javafx.scene.control.*;
-// Tanggal registrasi customer.
+import main.java.database.PersonDAO;
+import main.java.model.Customer;
 import java.time.LocalDate;
 
-// Menghubungkan form customer dengan tabel dan operasi penyimpanan.
+/** Mengelola form dan tabel customer pada halaman admin. */
 public class CustomerController {
-    // Tabel untuk menampilkan dan memilih data customer.
+    @FXML private TextField nameField;
+    @FXML private TextField phoneField;
+    @FXML private ComboBox<String> roleComboBox;
+    @FXML private RadioButton maleRadio;
+    @FXML private RadioButton femaleRadio;
+    @FXML private DatePicker birthDatePicker;
+    @FXML private CheckBox subscribedCheckBox;
+
     @FXML private TableView<Customer> customerTable;
-    // Kolom ID, nama, telepon, dan email pada tabel.
-    @FXML private TableColumn<Customer, Integer> idColumn;
-    @FXML private TableColumn<Customer, String> nameColumn, phoneColumn, emailColumn;
-    // Field input yang nilainya disalin ke/dari customer terpilih.
-    @FXML private TextField nameField, phoneField, emailField;
-    // Perantara akses data customer pada database.
+    @FXML private TableColumn<Customer, String> nameColumn;
+    @FXML private TableColumn<Customer, String> roleColumn;
+    @FXML private TableColumn<Customer, String> genderColumn;
+    @FXML private TableColumn<Customer, String> birthDateColumn;
+    @FXML private TableColumn<Customer, String> subscribedColumn;
+    @FXML private TableColumn<Customer, String> otherColumn;
+
     private final PersonDAO dao = new PersonDAO();
 
-    // Menghubungkan kolom tabel ke properti customer dan mengisi tabel awal.
     @FXML
     private void initialize() {
-        idColumn.setCellValueFactory(v ->
-                new javafx.beans.property.SimpleIntegerProperty(v.getValue().getId()).asObject());
-        nameColumn.setCellValueFactory(v ->
-                new javafx.beans.property.SimpleStringProperty(v.getValue().getName()));
-        phoneColumn.setCellValueFactory(v ->
-                new javafx.beans.property.SimpleStringProperty(v.getValue().getPhone()));
-        emailColumn.setCellValueFactory(v ->
-                new javafx.beans.property.SimpleStringProperty(v.getValue().getEmail()));
+        roleComboBox.setItems(FXCollections.observableArrayList("Buyer"));
+        roleComboBox.setValue("Buyer");
 
-        // Event pemilihan baris: isi form dengan nilai customer tersebut.
-        customerTable.getSelectionModel().selectedItemProperty().addListener((observable, oldCustomer, customer) -> {
+        nameColumn.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getName()));
+        roleColumn.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().getrole()));
+        genderColumn.setCellValueFactory(v -> new SimpleStringProperty(displayGender(v.getValue().getGender())));
+        birthDateColumn.setCellValueFactory(v -> new SimpleStringProperty(
+                v.getValue().getBirthDate() == null ? "" : v.getValue().getBirthDate().toString()));
+        subscribedColumn.setCellValueFactory(v -> new SimpleStringProperty(
+                Boolean.toString(v.getValue().isSubscribed())));
+        otherColumn.setCellValueFactory(v -> {
+            Customer c = v.getValue();
+            String details = "No HP: " + safe(c.getPhone());
+            if (c.getEmail() != null && !c.getEmail().isBlank()) {
+                details += " | Email: " + c.getEmail();
+            }
+            return new SimpleStringProperty(details);
+        });
+
+        customerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, customer) -> {
             if (customer != null) {
                 nameField.setText(customer.getName());
                 phoneField.setText(customer.getPhone());
-                emailField.setText(customer.getEmail());
+                roleComboBox.setValue("Buyer");
+                maleRadio.setSelected("Male".equalsIgnoreCase(customer.getGender()));
+                femaleRadio.setSelected("Female".equalsIgnoreCase(customer.getGender()));
+                birthDatePicker.setValue(customer.getBirthDate());
+                subscribedCheckBox.setSelected(customer.isSubscribed());
             }
         });
-        refresh();
+        refreshList();
     }
 
-    // Memvalidasi lalu menyimpan customer baru.
-    @FXML
-    private void add() {
-        // Event Tambah: bentuk model baru, validasi, simpan, lalu muat ulang tabel.
+    @FXML private void add() {
         try {
-            Customer customer = new Customer(
-                    0, nameField.getText(), phoneField.getText(), LocalDate.now(), emailField.getText());
-            if (!customer.validate()) {
-                throw new IllegalArgumentException("Nama dan nomor telepon (8-15 digit) wajib valid.");
-            }
-            dao.addCustomer(customer);
-            refresh();
+            dao.addCustomer(buildCustomer(0, LocalDate.now()));
             clear();
-        } catch (Exception e) {
-            error(e);
-        }
+            refreshList();
+            info("Customer berhasil ditambahkan.");
+        } catch (Exception e) { error("Customer gagal ditambahkan: " + e.getMessage()); }
     }
 
-    // Memperbarui customer yang sedang dipilih pada tabel.
-    @FXML
-    private void update() {
-        // Event Ubah: pertahankan ID dan tanggal registrasi dari data yang dipilih.
+    @FXML private void update() {
         Customer selected = customerTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            error(new IllegalArgumentException("Pilih customer yang ingin diubah."));
-            return;
-        }
+        if (selected == null) { warning("Pilih customer yang ingin diubah."); return; }
         try {
-            Customer customer = new Customer(
-                    selected.getId(),
-                    nameField.getText(),
-                    phoneField.getText(),
-                    selected.getRegisteredAt(),
-                    emailField.getText());
-            dao.updateCustomer(customer);
-            refresh();
+            dao.updateCustomer(buildCustomer(selected.getId(), selected.getRegisteredAt()));
             clear();
-        } catch (Exception e) {
-            error(e);
-        }
+            refreshList();
+            info("Data customer berhasil diubah.");
+        } catch (Exception e) { error("Data customer gagal diubah: " + e.getMessage()); }
     }
 
-    // Menghapus customer yang sedang dipilih.
-    @FXML
-    private void delete() {
-        // Event Hapus: hapus ID customer terpilih melalui DAO.
+    @FXML private void delete() {
         Customer selected = customerTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            error(new IllegalArgumentException("Pilih customer yang ingin dihapus."));
-            return;
-        }
+        if (selected == null) { warning("Pilih customer yang ingin dihapus."); return; }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Hapus customer " + selected.getName() + "?",
+                ButtonType.CANCEL, ButtonType.OK);
+        confirm.setTitle("Konfirmasi Hapus");
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
         try {
             dao.deletePerson(selected.getId());
-            refresh();
             clear();
-        } catch (Exception e) {
-            error(e);
-        }
+            refreshList();
+        } catch (Exception e) { error("Customer gagal dihapus: " + e.getMessage()); }
     }
 
-    // Mengosongkan field input dan membatalkan pilihan baris.
-    private void clear() {
+    private Customer buildCustomer(int id, LocalDate registeredAt) {
+        String gender = maleRadio.isSelected() ? "Male" : femaleRadio.isSelected() ? "Female" : null;
+        return new Customer(id, nameField.getText(), phoneField.getText(), registeredAt,
+                null, gender, birthDatePicker.getValue(), subscribedCheckBox.isSelected());
+    }
+
+    @FXML private void clear() {
         nameField.clear();
         phoneField.clear();
-        emailField.clear();
+        roleComboBox.setValue("Buyer");
+        maleRadio.setSelected(true);
+        birthDatePicker.setValue(null);
+        subscribedCheckBox.setSelected(false);
         customerTable.getSelectionModel().clearSelection();
     }
 
-    // Mengambil ulang daftar customer dan memasangnya ke TableView.
-    private void refresh() {
+    private void refreshList() {
         try {
             customerTable.setItems(FXCollections.observableArrayList(dao.getCustomers()));
-        } catch (Exception e) {
-            error(e);
-        }
+        } catch (Exception e) { error("Data customer gagal dimuat: " + e.getMessage()); }
     }
 
-    // Menampilkan pesan kesalahan agar kegagalan tidak disembunyikan.
-    private void error(Exception e) {
-        new Alert(Alert.AlertType.ERROR, e.getMessage()).showAndWait();
-    }
+    private String displayGender(String value) { return value == null ? "" : value; }
+    private String safe(String value) { return value == null ? "" : value; }
+    private void info(String message) { new Alert(Alert.AlertType.INFORMATION, message).showAndWait(); }
+    private void warning(String message) { new Alert(Alert.AlertType.WARNING, message).showAndWait(); }
+    private void error(String message) { new Alert(Alert.AlertType.ERROR, message).showAndWait(); }
 }

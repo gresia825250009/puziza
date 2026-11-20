@@ -138,10 +138,14 @@ public class PizzaDAO {
                                     ? "cheese_mania"
                                     : "volcano_meat";
                             // INSERT subtype dengan ON CONFLICT mencegah relasi ganda.
+                            String topping = "CheeseMania".equalsIgnoreCase(entry[0])
+                                    ? "Mozzarella and cheese"
+                                    : "Beef, sausage, spicy sauce";
                             try (PreparedStatement subtype = c.prepareStatement(
-                                    "INSERT INTO " + table + "(pizza_id) VALUES(?) "
-                                            + "ON CONFLICT (pizza_id) DO NOTHING")) {
+                                    "INSERT INTO " + table + "(pizza_id, topping_description) VALUES(?,?) "
+                                            + "ON CONFLICT (pizza_id) DO UPDATE SET topping_description=EXCLUDED.topping_description")) {
                                 subtype.setInt(1, id.getInt(1));
+                                subtype.setString(2, topping);
                                 subtype.executeUpdate();
                             }
                         }
@@ -181,11 +185,15 @@ public class PizzaDAO {
                 d.executeUpdate();
             }
             // INSERT membuat relasi subtype yang sesuai; konflik ID yang sudah ada dilewati.
+            String topping = "CheeseMania".equalsIgnoreCase(name)
+                    ? "Mozzarella and cheese"
+                    : "Beef, sausage, spicy sauce";
             String sql = "INSERT INTO " + table
-                    + "(pizza_id) VALUES(?) "
-                    + "ON CONFLICT (pizza_id) DO NOTHING";
+                    + "(pizza_id, topping_description) VALUES(?,?) "
+                    + "ON CONFLICT (pizza_id) DO UPDATE SET topping_description=EXCLUDED.topping_description";
             try (PreparedStatement p = c.prepareStatement(sql)) {
                 p.setInt(1, id);
+                p.setString(2, topping);
                 p.executeUpdate();
             }
         }

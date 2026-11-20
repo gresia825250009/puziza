@@ -433,3 +433,42 @@
     -fx-background-color: #a43b30;
     -fx-text-fill: white;
 }
+
+/* Form Manage Customer: susunan ringkas seperti referensi Person. */
+.customer-page {
+    -fx-spacing: 10px;
+}
+.customer-form {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-border-color: #e7d8d0;
+    -fx-border-radius: 6px;
+    -fx-padding: 12px 14px;
+}
+.customer-form-label {
+    -fx-text-fill: #3a302d;
+    -fx-font-size: 12px;
+}
+.customer-input {
+    -fx-pref-width: 260px;
+    -fx-pref-height: 29px;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 3px;
+    -fx-border-color: #cfc7c2;
+    -fx-border-radius: 3px;
+    -fx-padding: 5px 7px;
+    -fx-font-size: 12px;
+}
+.customer-input:focused {
+    -fx-border-color: #f27b21;
+}
+.customer-actions {
+    -fx-padding: 2px 0 0 94px;
+}
+.customer-actions .button {
+    -fx-padding: 5px 12px;
+    -fx-font-size: 12px;
+}
+.customer-table {
+    -fx-font-size: 12px;
+}

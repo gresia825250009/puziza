@@ -18,21 +18,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 // Mengatur format tanggal dan jam pada kolom tanggal transaksi.
 import java.time.format.DateTimeFormatter;
-// Memformat nilai total menjadi mata uang.
-import java.text.NumberFormat;
-// Menentukan format lokal Indonesia untuk pemisah dan simbol mata uang.
-import java.util.Locale;
 
 // Menampilkan riwayat transaksi dalam tabel penjualan.
 public class SalesController {
     // Tabel berisi seluruh riwayat transaksi.
     @FXML private TableView<SaleHistory> salesTable;
-    // Kolom kode, waktu, customer, kasir, dan total penjualan.
+    // Kolom kode, waktu, customer, kasir, dan jumlah unit terjual.
     @FXML private TableColumn<SaleHistory, String> codeColumn;
     @FXML private TableColumn<SaleHistory, String> dateColumn;
     @FXML private TableColumn<SaleHistory, String> customerColumn;
     @FXML private TableColumn<SaleHistory, String> cashierColumn;
-    @FXML private TableColumn<SaleHistory, String> totalColumn;
+    @FXML private TableColumn<SaleHistory, String> quantityColumn;
 
     // Menetapkan formatter kolom dan memuat riwayat transaksi awal.
     @FXML private void initialize() {
@@ -46,9 +42,8 @@ public class SalesController {
                 new SimpleStringProperty(cell.getValue().getCustomerName()));
         cashierColumn.setCellValueFactory(cell ->
                 new SimpleStringProperty(cell.getValue().getCashierName()));
-        totalColumn.setCellValueFactory(cell ->
-                new SimpleStringProperty(NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID"))
-                        .format(cell.getValue().getTotal())));
+        quantityColumn.setCellValueFactory(cell ->
+                new SimpleStringProperty(Integer.toString(cell.getValue().getQuantity())));
         refresh();
     }
 

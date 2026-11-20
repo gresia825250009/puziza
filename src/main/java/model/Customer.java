@@ -1,45 +1,45 @@
 package main.java.model;
-/*
- * Class: Customer
- * Deskripsi: Model data customer aplikasi.
- * @author Gresia Valerina Widi
- * @author Garneta Auril Triasis
- */
 
-// LocalDate menyimpan tanggal registrasi customer.
 import java.time.LocalDate;
 
-// Merepresentasikan customer dan memvalidasi nama serta nomor teleponnya.
+/** Model profil customer. */
 public class Customer extends Person {
-    // Email merupakan data khusus customer yang tidak dimiliki Person umum.
     private String email;
-    // Mengisi atribut Person melalui parent dan menyimpan email customer.
-    public Customer(int id, String name, String phone, LocalDate registeredAt, String email) {
+    private String gender;
+    private LocalDate birthDate;
+    private boolean subscribed;
+
+    public Customer(int id, String name, String phone, LocalDate registeredAt,
+                    String email, String gender, LocalDate birthDate, boolean subscribed) {
         super(id, name, phone, registeredAt);
         this.email = email;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.subscribed = subscribed;
     }
 
-    // Getter dan setter untuk membaca atau memperbarui email.
-    public String getEmail() {
-        return email;
+    // Constructor lama tetap tersedia agar pemanggilan lama tidak langsung rusak.
+    public Customer(int id, String name, String phone, LocalDate registeredAt, String email) {
+        this(id, name, phone, registeredAt, email, null, null, false);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public boolean isSubscribed() { return subscribed; }
+    public void setSubscribed(boolean subscribed) { this.subscribed = subscribed; }
 
-    // Validasi mensyaratkan nama dan nomor telepon berisi 8 sampai 15 digit.
     @Override
     public boolean validate() {
-        return getName() != null
-                && !getName().isBlank()
-                && getPhone() != null
-                && getPhone().matches("\\d{8,15}");
+        return getName() != null && !getName().isBlank()
+                && getPhone() != null && getPhone().matches("\\d{8,15}")
+                && gender != null && !gender.isBlank()
+                && birthDate != null;
     }
 
-    // Mengembalikan label jenis person sebagai Customer.
     @Override
-    public String getPersonType() {
-        return "Customer";
-    }
+    public String getrole() { return "Buyer"; }
 }
