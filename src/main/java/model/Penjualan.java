@@ -26,6 +26,7 @@ public class Penjualan implements Invoice {
     private Cashier cashier;
     // Daftar pizza dan kuantitas yang menjadi rincian transaksi.
     private final List<OrderItem> items = new ArrayList<>();
+    
     // Constructor menetapkan informasi utama transaksi.
     public Penjualan(int id, String saleCode, LocalDateTime createdAt, Customer customer, Cashier cashier) {
         this.id = id;

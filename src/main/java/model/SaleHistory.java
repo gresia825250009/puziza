@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 
 // Menyimpan ringkasan transaksi untuk ditampilkan pada riwayat penjualan.
 public class SaleHistory {
-    // Nilai ringkasan hasil query: kode, waktu, nilai total, nama customer, dan kasir.
+    // Nilai ringkasan hasil query: kode, waktu, nilai total, nama customer, dan
+    // kasir.
     private final String saleCode;
     private final LocalDateTime createdAt;
     private final int quantity;
@@ -20,7 +21,7 @@ public class SaleHistory {
 
     // Constructor mengisi seluruh nilai ringkasan yang ditampilkan tabel.
     public SaleHistory(String saleCode, LocalDateTime createdAt, int quantity,
-                       String customerName, String cashierName) {
+            String customerName, String cashierName) {
         this.saleCode = saleCode;
         this.createdAt = createdAt;
         this.quantity = quantity;

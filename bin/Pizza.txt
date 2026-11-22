@@ -1,6 +1,0 @@
-VolcanoMeat,Small,45000
-VolcanoMeat,Medium,55000
-VolcanoMeat,Large,65000
-CheeseMania,Small,40000
-CheeseMania,Medium,50000
-CheeseMania,Large,60000

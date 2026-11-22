@@ -13,6 +13,7 @@ public abstract class Pizza {
     private int id;
     private String size;
     private double basePrice;
+    
     // Constructor parent menyiapkan ID, ukuran, dan harga dasar.
     protected Pizza(int id, String size, double basePrice) {
         this.id = id;

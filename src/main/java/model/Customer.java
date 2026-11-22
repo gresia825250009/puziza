@@ -10,7 +10,7 @@ public class Customer extends Person {
     private boolean subscribed;
 
     public Customer(int id, String name, String phone, LocalDate registeredAt,
-                    String email, String gender, LocalDate birthDate, boolean subscribed) {
+            String email, String gender, LocalDate birthDate, boolean subscribed) {
         super(id, name, phone, registeredAt);
         this.email = email;
         this.gender = gender;
@@ -23,14 +23,37 @@ public class Customer extends Person {
         this(id, name, phone, registeredAt, email, null, null, false);
     }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
-    public LocalDate getBirthDate() { return birthDate; }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
-    public boolean isSubscribed() { return subscribed; }
-    public void setSubscribed(boolean subscribed) { this.subscribed = subscribed; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
+    }
 
     @Override
     public boolean validate() {
@@ -41,5 +64,7 @@ public class Customer extends Person {
     }
 
     @Override
-    public String getrole() { return "Buyer"; }
+    public String getrole() {
+        return "Buyer";
+    }
 }
