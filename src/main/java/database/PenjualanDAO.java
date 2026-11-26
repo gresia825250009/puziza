@@ -1,10 +1,11 @@
 package main.java.database;
 
-import main.java.model.OrderItem;
+import main.java.model.Pizza;
 import main.java.model.Penjualan;
 import main.java.model.SaleHistory;
 
 import java.sql.*;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,16 +28,16 @@ public class PenjualanDAO {
         try (Connection c = PostgreSQLConnection.getConnection()) {
             c.setAutoCommit(false);
             try {
-                int quantity = penjualan.getItems().stream()
-                        .mapToInt(OrderItem::getQuantity).sum();
+                int quantity = penjualan.getTotalQuantity();
                 List<Integer> ids = new ArrayList<>();
-                for (OrderItem item : penjualan.getItems()) {
-                    if (item.getPizza() == null || item.getPizza().getId() <= 0) {
+                for (Map.Entry<Pizza, Integer> entry : penjualan.getItems().entrySet()) {
+                    Pizza pizza = entry.getKey();
+                    if (pizza.getId() <= 0) {
                         throw new SQLException("Ada produk tanpa ID pizza yang valid.");
                     }
                     // Simpan ID berulang sesuai jumlah unit agar isi array tetap merepresentasikan item.
-                    for (int i = 0; i < item.getQuantity(); i++) {
-                        ids.add(item.getPizza().getId());
+                    for (int i = 0; i < entry.getValue(); i++) {
+                        ids.add(pizza.getId());
                     }
                 }
                 Integer[] productIds = ids.toArray(new Integer[0]);

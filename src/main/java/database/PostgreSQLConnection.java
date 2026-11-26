@@ -17,8 +17,8 @@ public final class PostgreSQLConnection {
     // URL menunjuk server lokal PostgreSQL, port 5432, dan database puziza.
     private static final String URL = "jdbc:postgresql://localhost:5432/Puziza";
     // Kredensial database yang digunakan oleh driver JDBC.
-    private static final String USER = "neta"; 
-    private static final String PASSWORD = "B@543garneta"; 
+    private static final String USER = "gresia"; 
+    private static final String PASSWORD = "Gresia12"; 
 
     // Constructor privat karena kelas ini hanya menyediakan method statis.
     private PostgreSQLConnection() {

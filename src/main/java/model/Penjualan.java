@@ -8,12 +8,11 @@ package main.java.model;
 
 // LocalDateTime menyimpan tanggal dan jam transaksi.
 import java.time.LocalDateTime;
-// ArrayList/List menampung rincian item dalam suatu transaksi.
-import java.util.ArrayList;
-import java.util.List;
 // NumberFormat dan Locale memformat nilai uang sesuai lokal Indonesia.
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Association: transaksi memiliki customer, kasir, dan banyak item pizza. */
 // Menyimpan transaksi, relasi customer/kasir, dan rincian item pesanan.
@@ -24,8 +23,10 @@ public class Penjualan implements Invoice {
     private LocalDateTime createdAt;
     private Customer customer;
     private Cashier cashier;
-    // Daftar pizza dan kuantitas yang menjadi rincian transaksi.
-    private final List<OrderItem> items = new ArrayList<>();
+
+    // Rincian pesanan: pizza sebagai kunci, jumlah unit sebagai nilai.
+    // LinkedHashMap menjaga urutan pizza sesuai urutan ditambahkan.
+    private final Map<Pizza, Integer> items = new LinkedHashMap<>();
     
     // Constructor menetapkan informasi utama transaksi.
     public Penjualan(int id, String saleCode, LocalDateTime createdAt, Customer customer, Cashier cashier) {
@@ -57,20 +58,57 @@ public class Penjualan implements Invoice {
         return cashier;
     }
 
-    public List<OrderItem> getItems() {
-        return items;
+    // Setter, dipakai saat keranjang disimpan sebagai transaksi.
+    public void setSaleCode(String saleCode) {
+        this.saleCode = saleCode;
     }
 
-    // Hanya jumlah positif yang boleh menjadi item transaksi.
-    public void addPizza(Pizza pizza, int listproduk) {
-        if (listproduk > 0) {
-            items.add(new OrderItem(pizza, listproduk));
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public void setCashier(Cashier cashier) {
+        this.cashier = cashier;
+    }
+    // Jumlah unit untuk satu jenis pizza.
+    public int getQuantity(Pizza pizza) {
+        return items.getOrDefault(pizza, 0);
+    }
+
+    // Total seluruh unit dalam transaksi.
+    public int getTotalQuantity() {
+        return items.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    // Subtotal satu baris: harga setelah diskon dikali jumlah.
+    public double getLineSubtotal(Pizza pizza) {
+        return pizza.getFinalPrice() * getQuantity(pizza);
+    }
+
+    // Hanya jumlah positif yang boleh masuk. Pizza yang sama digabung dalam satu baris.
+    public void addPizza(Pizza pizza, int jumlah) {
+        if (pizza != null && jumlah > 0) {
+            items.merge(pizza, jumlah, Integer::sum);
         }
     }
 
-    // Menjumlahkan subtotal seluruh item dalam transaksi.
+    public void removePizza(Pizza pizza) {
+        items.remove(pizza);
+    }
+
+    public void clearItems() {
+        items.clear();
+    }
+
+    // ===== Perhitungan total =====
+
+    // Menjumlahkan subtotal seluruh baris.
     public double getSubtotal() {
-        return items.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        return items.keySet().stream().mapToDouble(this::getLineSubtotal).sum();
     }
 
     // Pajak dihitung 10% dari subtotal; total adalah subtotal ditambah pajak.
@@ -82,10 +120,9 @@ public class Penjualan implements Invoice {
         return getSubtotal() + getTax();
     }
 
-    // Menyusun rincian transaksi menjadi teks yang siap ditampilkan atau dicetak.
+    // Menyusun rincian transaksi menjadi teks struk.
     @Override
     public String generateInvoice() {
-        // Menyusun nomor, waktu, customer/kasir, detail, pajak, dan total sebagai teks.
         NumberFormat rp = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID"));
         StringBuilder b = new StringBuilder("PUZIZA PIZZA\n================================\n");
         b.append("Order: ").append(saleCode).append("\nDate: ").append(createdAt).append("\n");
@@ -96,12 +133,12 @@ public class Penjualan implements Invoice {
                 .append(cashier == null ? "-" : cashier.getName())
                 .append("\n");
 
-        for (OrderItem i : items) {
-            b.append(i.getQuantity())
+        for (Map.Entry<Pizza, Integer> e : items.entrySet()) {
+            b.append(e.getValue())
                     .append(" x ")
-                    .append(i.getPizza())
+                    .append(e.getKey())
                     .append(" = ")
-                    .append(rp.format(i.getSubtotal()))
+                    .append(rp.format(getLineSubtotal(e.getKey())))
                     .append("\n");
         }
 
@@ -111,5 +148,11 @@ public class Penjualan implements Invoice {
         return b.toString();
     }
 
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
 
+    public Map<Pizza, Integer> getItems() {
+        return items;
+    }
 }

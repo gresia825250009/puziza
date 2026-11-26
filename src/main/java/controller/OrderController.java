@@ -17,7 +17,7 @@ import main.java.model.Cashier;
 // Model customer dari database.
 import main.java.model.Customer;
 // Satu baris pizza dan jumlahnya di keranjang.
-import main.java.model.OrderItem;
+import java.util.Map;
 // Model transaksi yang berisi customer, kasir, dan item.
 import main.java.model.Penjualan;
 // Model menu pizza yang dipilih pengguna.
@@ -44,16 +44,16 @@ public class OrderController {
     @FXML private ComboBox<String> customerCombo;
     @FXML private ComboBox<Cashier> cashierCombo;
     // Tabel keranjang dan kolom customer, nama pizza, ukuran, jumlah, subtotal.
-    @FXML private TableView<OrderItem> cartTable;
-    @FXML private TableColumn<OrderItem, String> customerColumn;
-    @FXML private TableColumn<OrderItem, String> nameColumn;
-    @FXML private TableColumn<OrderItem, String> sizeColumn;
-    @FXML private TableColumn<OrderItem, String> qtyColumn;
-    @FXML private TableColumn<OrderItem, String> subtotalColumn;
+    @FXML private TableView<Map.Entry<Pizza, Integer>> cartTable;
+    @FXML private TableColumn<Map.Entry<Pizza, Integer>, String> customerColumn;
+    @FXML private TableColumn<Map.Entry<Pizza, Integer>, String> nameColumn;
+    @FXML private TableColumn<Map.Entry<Pizza, Integer>, String> sizeColumn;
+    @FXML private TableColumn<Map.Entry<Pizza, Integer>, String> qtyColumn;
+    @FXML private TableColumn<Map.Entry<Pizza, Integer>, String> subtotalColumn;
     // Label yang menampilkan perhitungan nilai belanja.
     @FXML private Label totalLabel;
     // Daftar item pesanan yang menjadi sumber baris cartTable.
-    private final ObservableList<OrderItem> cart = FXCollections.observableArrayList();
+    private final Penjualan cart = new Penjualan(0, null, null, null, null);
     // Akses database khusus data menu pizza.
     private final PizzaDAO pizzaDAO = new PizzaDAO();
 
@@ -91,13 +91,12 @@ public class OrderController {
         customerColumn.setCellValueFactory(d -> new SimpleStringProperty(currentCustomerName()));
         customerCombo.getEditor().textProperty().addListener((observable, oldName, newName) -> cartTable.refresh());
         customerCombo.valueProperty().addListener((observable, oldName, newName) -> cartTable.refresh());
-        nameColumn.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getPizza().getName()));
-        sizeColumn.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getPizza().getSize()));
-        qtyColumn.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getQuantity())));
+        nameColumn.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getKey().getName()));
+        sizeColumn.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getKey().getSize()));
+        qtyColumn.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getValue())));
         subtotalColumn.setCellValueFactory(d -> new SimpleStringProperty(
-                String.format("Rp%,.0f", d.getValue().getSubtotal())));
-        cartTable.setItems(cart);
-        refreshTotal();
+                String.format("Rp%,.0f", cart.getLineSubtotal(d.getValue().getKey()))));
+        refreshCart();
     }
 
     // Menambahkan pizza terpilih ke keranjang sesuai jumlah yang diminta.
@@ -109,15 +108,15 @@ public class OrderController {
             warn("Pilih pizza terlebih dahulu.");
             return;
         }
-        cart.add(new OrderItem(p, quantitySpinner.getValue()));
-        refreshTotal();
+        cart.addPizza(p, quantitySpinner.getValue());
+        refreshCart();
     }
 
     // Event Bersihkan Keranjang: hapus semua item dan hitung ulang total.
     @FXML
     private void clearCart() {
-        cart.clear();
-        refreshTotal();
+        cart.clearItems();
+        refreshCart();
     }
 
     // Menyimpan transaksi, menampilkan invoice, dan mengosongkan keranjang.
@@ -140,32 +139,27 @@ public class OrderController {
                     : new PersonDAO().findOrCreateCustomer(nama.trim());
             // Transaksi dapat disimpan sebagai walk-in. Customer terdaftar dapat dihubungkan
             // setelah dipilih dari daftar customer yang tersimpan di database.
-            Penjualan sale = new Penjualan(
-                    0,
-                    "PZ-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(),
-                    LocalDateTime.now(),
-                    customer,
-                    cashierCombo.getValue());
-            for (OrderItem item : cart) {
-                sale.addPizza(item.getPizza(), item.getQuantity());
-            }
-            new PenjualanDAO().save(sale);
+            cart.setSaleCode("PZ-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+            cart.setCreatedAt(LocalDateTime.now());
+            cart.setCustomer(customer);
+            cart.setCashier(cashierCombo.getValue());
+            new PenjualanDAO().save(cart);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main/resources/invoice.fxml"));
             javafx.scene.Parent view = loader.load();
             InvoiceController controller = loader.getController();
-            controller.setInvoice(sale.generateInvoice());
+            controller.setInvoice(cart.generateInvoice());
 
             ButtonType lagi = new ButtonType("Pesan Lagi", ButtonBar.ButtonData.CANCEL_CLOSE);
             ButtonType utama = new ButtonType("Kembali ke Halaman Utama", ButtonBar.ButtonData.OK_DONE);
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Struk Puziza");
             dialog.getDialogPane().setContent(view);
-            dialog.getDialogPane().getButtonTypes().addAll(lagi,utama);
+            dialog.getDialogPane().getButtonTypes().addAll(lagi, utama);
             ButtonType pilih = dialog.showAndWait().orElse(lagi);
 
-            cart.clear();
-            refreshTotal();
+            cart.clearItems();
+            refreshCart();
             if (pilih == utama) {
                 backToHome();
             }
@@ -184,17 +178,19 @@ public class OrderController {
         }
     }
 
-    // Menghitung subtotal, pajak, dan total dari semua item keranjang.
+    // Menyegarkan isi tabel keranjang dari data Penjualan, lalu hitung ulang total.
+    private void refreshCart() {
+        cartTable.setItems(FXCollections.observableArrayList(cart.getItems().entrySet()));
+        refreshTotal();
+    }
+
+    // Menampilkan subtotal, pajak, dan total dari keranjang.
     private void refreshTotal() {
-        double total = 0;
-        for (OrderItem i : cart) {
-            total += i.getSubtotal();
-        }
         totalLabel.setText(String.format(
                 "Total sebelum pajak: Rp%,.0f | Pajak 10%%: Rp%,.0f | Total: Rp%,.0f",
-                total,
-                total * 0.10,
-                total * 1.10));
+                cart.getSubtotal(),
+                cart.getTax(),
+                cart.getTotal()));
     }
 
     // Menampilkan Walk-in jika nama customer belum diisi.
