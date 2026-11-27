@@ -74,6 +74,15 @@ public class Penjualan implements Invoice {
     public void setCashier(Cashier cashier) {
         this.cashier = cashier;
     }
+
+    public Map<Pizza, Integer> getItems() {
+        return items;
+    }
+    
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
     // Jumlah unit untuk satu jenis pizza.
     public int getQuantity(Pizza pizza) {
         return items.getOrDefault(pizza, 0);
@@ -148,11 +157,4 @@ public class Penjualan implements Invoice {
         return b.toString();
     }
 
-    public boolean isEmpty() {
-        return items.isEmpty();
-    }
-
-    public Map<Pizza, Integer> getItems() {
-        return items;
-    }
 }
